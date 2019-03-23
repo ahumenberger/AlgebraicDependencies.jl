@@ -41,6 +41,7 @@ function dependencies(::Type{sideal}, roots::Vector{Basic}; variables=Basic[])
         throw("Number of variables does not match number exponentials. Got $(length(variables)), need $(length(roots))")
     end
     lattice = findrelations(roots)
+    @debug "Lattice" lattice
     if isempty(lattice)
         return nothing
     end
@@ -160,18 +161,19 @@ end
 
 function findrelations(roots::Vector{Basic})
     # first treat zeros in the root list
-    # zeros = find(x -> x == 0, roots)
-    # if length(zeros) == length(roots)
-    #     return []
-    # end
-    # if !isempty(zeros)
-    #     B = findrelations(filter(x->x!=0, roots))
-    #     # TODO: insert new dimensions
-    #     return B
-    # end
+    zpos = findall(iszero, roots)
+    if length(zpos) == length(roots)
+        return []
+    end
+    if !isempty(zpos)
+        b = findrelations(filter(!iszero, roots))
+        for i in zpos
+            b = hcat(b[:,1:i-1], zeros(nrows(b)), b[:,i:end])
+        end
+        return b
+    end
 
-    # TODO: common number field does not work as expected
-    degree, roots, mpolys = common_number_field(roots) # TODO: does nothing if the roots belong to the same field
+    degree, roots, mpolys = common_number_field(roots)
     @debug "Common number field" degree roots mpolys
     rs = [convert(Complex{BigFloat}, x) for x in roots]
     @debug "Complex roots" rs
@@ -210,6 +212,7 @@ function findrelations(roots::Vector{Basic})
     while prod(Bool[check_relation(roots, m[i,:]) for i in 1:size(m)[1]]) == 0
         m1 = getbasis(relog, level, bound)
         m2 = getbasis(imlog, level, bound)
+        @debug "" m1 m2[:,1:end-1]
         m = z_module_intersect(m1, m2[:,1:end-1])
         level = level + 1
     end
@@ -295,7 +298,7 @@ function getbasis(l::Vector{BigFloat}, level::Int, bound::Int)
     # TODO: find better way to filter rows
     res = Matrix{Rational{Int}}(undef, 0,n+1)
     for i in 1:nrows(b)
-        if (abs(b[i,:][end]) <= d*abs(dot(b[i,1:n],e)))
+        if (abs(b[i,:][end]) <= d*sum(abs(bb*ee) for (bb, ee) in zip(b[i,1:n],e)))
             res = vcat(res, transpose(b[i,:]))
         end
     end
