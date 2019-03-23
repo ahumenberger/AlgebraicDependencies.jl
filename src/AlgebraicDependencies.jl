@@ -55,15 +55,17 @@ function common_number_field(roots::Vector{Basic})
     if isempty(mps)
         return 1, roots, ps 
     end
-
     deleteat!(roots, indices)
-    R, _ = PolynomialRing(QQ, string(v))
-    K, g = number_field(map(R, mps))
-    @debug "Number field" K
+
+    uniquemps = Base.unique(mps)
+    mpsindices = [findfirst(x->x==m, uniquemps) for m in mps]
+    R, _ = Nemo.PolynomialRing(Nemo.QQ, string(v))
+    K, g = number_field(map(R, uniquemps))
+    @debug "Number field" K, mpsindices
     S, mS = simple_extension(K)
     @debug "Simple extension" S
     gs = [SymEngine.lambdify(Basic(replace(string(mS\(x)), "//"=>"/"))) for x in g]
-    rs = [f isa Function ? f(r) : Basic(f) for (f, r) in zip(gs, roots)]
+    rs = [gs[j](roots[i]) for (i, j) in enumerate(mpsindices)]
     for (i, ind) in enumerate(indices)
         splice!(rs, ind:ind-1, ratroots[i])
     end
