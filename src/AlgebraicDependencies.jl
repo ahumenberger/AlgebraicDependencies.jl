@@ -1,6 +1,6 @@
 module AlgebraicDependencies
 
-export dependencies
+export @deps, dependencies
 
 using SymEngine
 using SymPy
@@ -10,6 +10,10 @@ using Nemo
 using LinearAlgebra
 using ContinuedFractions
 using Singular
+
+macro deps(args...)
+    dependencies(collect(args))
+end
 
 function dependencies(::Type{sideal}, roots::Vector{Basic}; variables=Basic[])
     if length(roots) < 2
