@@ -11,18 +11,36 @@ using LinearAlgebra
 using ContinuedFractions
 using Singular
 
-function dependencies(roots::Vector{Basic}; variables=Basic[])
-    # println("Computing dependencies between ", roots)
+function dependencies(::Type{sideal}, roots::Vector{Basic}; variables=Basic[])
     if length(roots) < 2
         return nothing
     end
+    if isempty(variables)
+        variables = [Basic("v$i") for i in 1:length(roots)]
+    elseif length(variables) != length(roots)
+        throw("Number of variables does not match number exponentials. Got $(length(variables)), need $(length(roots))")
+    end
     lattice = findrelations(roots)
-    # if isempty(variables)
-    #     variables = symset("v", length(lattice))
-    # elseif length(variables) != ncols(lattice)
-    #     throw("Number of variables does not match number of columms. Got $(length(variables)), need $(ncols(lattice))")
-    # end
+    if isempty(lattice)
+        return nothing
+    end
     return ideal(lattice, variables)
+end
+
+function dependencies(::Type{Basic}, roots::Vector{Basic}; variables=Basic[])
+    ideal = dependencies(sideal, roots; variables = variables)
+    if ideal == nothing
+        return Basic[]
+    end
+    [Basic(string(ideal[i])) for i in 1:Singular.ngens(ideal)]
+end
+
+function dependencies(roots; variables=[])
+    ideal = dependencies(sideal, map(Basic, roots); variables = map(Basic, variables))
+    if ideal == nothing
+        return Expr[]
+    end
+    [Meta.parse(string(ideal[i])) for i in 1:Singular.ngens(ideal)]
 end
 
 is_rational(x::Basic) = SymEngine.BasicType(x) isa SymEngine.BasicType{Val{:Integer}} || SymEngine.BasicType(x) isa SymEngine.BasicType{Val{:Rational}}
@@ -91,12 +109,14 @@ function masser_bound(degree::Int, roots::Vector{Basic}, mpolys::Vector{Polynomi
     return ceil(d^2 * (4*h*k*d* (log(2+d)/log(log(2+d)))^3)^(k-1) + 1)
 end
 
+gensym_unhashed(s::Symbol) = Symbol(replace(string(gensym(s)), "#"=>""))
+
 function ideal(m::Matrix{BigInt}, x::Array{Basic,1})
     if isempty(m)
         return []
     end
 
-    y = [Basic("v$i") for i in 1:length(x)]
+    y = [Basic(gensym_unhashed(:vv)) for i in 1:length(x)]
     base = Basic[]
     for i in 1:nrows(m)
         r = 1
