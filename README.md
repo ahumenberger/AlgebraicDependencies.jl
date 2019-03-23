@@ -11,3 +11,6 @@ julia> @deps (1-sqrt(5))/2 (1+sqrt(5))/2
 1-element Array{Expr,1}:
  :(v1 ^ 2 * v2 ^ 2 - 1)
 ```
+
+#### References
+M. Kauers, B. Zimmermann. Computing the algebraic relations of C-finite sequences and multisequences. *J. Symb. Comput.* 43 (2008): 787-803.
