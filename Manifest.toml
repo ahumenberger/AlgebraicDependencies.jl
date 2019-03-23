@@ -31,6 +31,19 @@ git-tree-sha1 = "b625d802587c2150c279a40a646fba63f9bd8187"
 uuid = "8f4d0f93-b110-5947-807f-2305c1781a2d"
 version = "1.2.0"
 
+[[ContinuedFractions]]
+git-tree-sha1 = "c287592d1827b2da642f17acaebc4831b54fbbcd"
+repo-rev = "master"
+repo-url = "https://github.com/johnmyleswhite/ContinuedFractions.jl"
+uuid = "b28563ba-f3de-538b-bd45-5b40df25bcd0"
+version = "0.1.0+"
+
+[[CxxWrap]]
+deps = ["BinaryProvider", "Libdl", "Test"]
+git-tree-sha1 = "8da57ef9a68690903b0fc625e935b49f53ba58f9"
+uuid = "1f15a43c-97ca-5a2a-ae31-89f07a497df4"
+version = "0.8.1"
+
 [[Dates]]
 deps = ["Printf"]
 uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
@@ -95,6 +108,12 @@ version = "0.12.3"
 deps = ["Dates", "LibGit2", "Markdown", "Printf", "REPL", "Random", "SHA", "UUIDs"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
+[[Polynomials]]
+deps = ["LinearAlgebra", "SparseArrays", "Test"]
+git-tree-sha1 = "62142bd65d3f8aeb2226ec64dd8493349147df94"
+uuid = "f27b6e38-b328-58d1-80ce-0feddd5e7a45"
+version = "0.5.2"
+
 [[Printf]]
 deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
@@ -132,6 +151,14 @@ uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 [[SharedArrays]]
 deps = ["Distributed", "Mmap", "Random", "Serialization"]
 uuid = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
+
+[[Singular]]
+deps = ["AbstractAlgebra", "CxxWrap", "Libdl", "LinearAlgebra", "Markdown", "Nemo", "Statistics", "Test"]
+git-tree-sha1 = "e8e6c79d2a4d2df808811d613f1f24cd4edebe0c"
+repo-rev = "master"
+repo-url = "https://github.com/ahumenberger/Singular.jl"
+uuid = "07ff78f2-aaa2-527c-9c0a-731feae108f8"
+version = "0.0.0"
 
 [[Sockets]]
 uuid = "6462fe0b-24de-5631-8697-dd941f90decc"

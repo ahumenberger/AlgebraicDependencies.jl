@@ -2,14 +2,14 @@ module AlgebraicDependencies
 
 export @deps, dependencies
 
+using LinearAlgebra
 using SymEngine
 using SymPy
-using Polynomials
-using Hecke
 using Nemo
-using LinearAlgebra
-using ContinuedFractions
+using Hecke
 using Singular
+using Polynomials
+using ContinuedFractions
 
 """
     @deps r1 r2 r3 ...

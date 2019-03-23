@@ -4,7 +4,11 @@ authors = ["Andreas Humenberger <ahumenberger@gmail.com>"]
 version = "0.1.0"
 
 [deps]
+ContinuedFractions = "b28563ba-f3de-538b-bd45-5b40df25bcd0"
 Hecke = "3e1990a7-5d81-5526-99ce-9ba3ff248f21"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Nemo = "2edaba10-b0f1-5616-af89-8c11ac63239a"
+Polynomials = "f27b6e38-b328-58d1-80ce-0feddd5e7a45"
+Singular = "07ff78f2-aaa2-527c-9c0a-731feae108f8"
 SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8"
 SymPy = "24249f21-da20-56a4-8eb1-6a02cf4ae2e6"
