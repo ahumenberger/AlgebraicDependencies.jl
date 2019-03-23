@@ -11,6 +11,22 @@ using LinearAlgebra
 using ContinuedFractions
 using Singular
 
+"""
+    @deps r1 r2 r3 ...
+
+Compute a basis for the algebraic dependencies among the ``r_i^n``.
+
+# Examples
+```julia-repl
+julia> @deps 2 1/2
+1-element Array{Expr,1}:
+ :(v1 * v2 - 1)
+
+julia> @deps (1-sqrt(5))/2 (1+sqrt(5))/2
+1-element Array{Expr,1}:
+ :(v1 ^ 2 * v2 ^ 2 - 1)
+```
+"""
 macro deps(args...)
     dependencies(collect(args))
 end
