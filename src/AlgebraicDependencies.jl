@@ -67,9 +67,9 @@ end
 is_rational(x::Basic) = SymEngine.BasicType(x) isa SymEngine.BasicType{Val{:Integer}} || SymEngine.BasicType(x) isa SymEngine.BasicType{Val{:Rational}}
 
 function minpoly(r::Basic, z::Symbol)
-    s = Sym(z)
-    p = SymPy.minpoly(Sym(string(r)), s)
-    cs = SymPy.coeffs(p, s)
+    s = sympify(z)
+    p = sympy.minpoly(sympify(string(r)), s)
+    cs = sympy.Poly(p, s).coeffs()
     bs = map(Basic ∘ string, cs)
     Basic(string(p)), Polynomials.Poly(bs)
 end
