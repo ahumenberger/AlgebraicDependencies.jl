@@ -220,7 +220,7 @@ function findrelations(roots::Vector{Basic})
     return m
 end
 
-hnf_with_transform(m::Matrix{Int}) = Matrix{Int}.(Nemo.hnf_with_trafo(matrix(FlintZZ, m)))
+hnf_with_transform(m::Matrix{Int}) = Matrix{Int}.(Nemo.hnf_with_transform(matrix(FlintZZ, m)))
 
 function lattice_divide(l::Matrix{Int}, d::Int)
     n = ncols(l)
@@ -373,6 +373,7 @@ function (R::FmpqPolyRing)(p::Expr)
 end
 
 function (R::Singular.PolyRing)(p::Expr)
+    @info p
     vs = gens(R)
     vs = [:($(Symbol(string(v))) = $v) for v in vs]
     q = quote
