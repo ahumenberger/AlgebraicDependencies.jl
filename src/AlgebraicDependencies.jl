@@ -48,6 +48,9 @@ function dependencies(::Type{sideal}, roots::Vector{Basic}; variables=Basic[])
     return ideal(lattice, variables)
 end
 
+dependencies(::Type{sideal}, roots; variables=[]) = 
+    dependencies(sideal, map(Basic ∘ string, roots); variables = map(Basic ∘ string, variables))
+
 function dependencies(::Type{Basic}, roots::Vector{Basic}; variables=Basic[])
     ideal = dependencies(sideal, roots; variables = variables)
     if ideal == nothing
@@ -57,7 +60,7 @@ function dependencies(::Type{Basic}, roots::Vector{Basic}; variables=Basic[])
 end
 
 function dependencies(roots; variables=[])
-    ideal = dependencies(sideal, map(Basic, roots); variables = map(Basic, variables))
+    ideal = dependencies(sideal, map(Basic ∘ string, roots); variables = map(Basic ∘ string, variables))
     if ideal == nothing
         return Expr[]
     end
@@ -373,7 +376,6 @@ function (R::FmpqPolyRing)(p::Expr)
 end
 
 function (R::Singular.PolyRing)(p::Expr)
-    @info p
     vs = gens(R)
     vs = [:($(Symbol(string(v))) = $v) for v in vs]
     q = quote
