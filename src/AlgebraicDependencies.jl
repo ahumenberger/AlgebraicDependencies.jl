@@ -53,7 +53,7 @@ dependencies(::Type{sideal}, roots; variables=[]) =
 
 function dependencies(::Type{Basic}, roots::Vector{Basic}; variables=Basic[])
     ideal = dependencies(sideal, roots; variables = variables)
-    if ideal == nothing
+    if ideal === nothing
         return Basic[]
     end
     [Basic(string(ideal[i])) for i in 1:Singular.ngens(ideal)]
@@ -61,7 +61,7 @@ end
 
 function dependencies(roots; variables=[])
     ideal = dependencies(sideal, map(Basic ∘ string, roots); variables = map(Basic ∘ string, variables))
-    if ideal == nothing
+    if ideal === nothing
         return Expr[]
     end
     [Meta.parse(string(ideal[i])) for i in 1:Singular.ngens(ideal)]
