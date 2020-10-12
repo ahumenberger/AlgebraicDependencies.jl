@@ -8,8 +8,11 @@ using SymPy
 using Nemo
 using Hecke
 using Singular
-using Polynomials
-using ContinuedFractions
+using Polynomials.PolyCompat
+
+import Base: length, iterate, collect
+
+include("ContinuedFractions.jl")
 
 """
     @deps r1 r2 r3 ...
@@ -74,13 +77,13 @@ function minpoly(r::Basic, z::Symbol)
     p = sympy.minpoly(sympify(string(r)), s)
     cs = sympy.Poly(p, s).coeffs()
     bs = map(Basic ∘ string, cs)
-    Basic(string(p)), Polynomials.Poly(bs)
+    Basic(string(p)), PolyCompat.Poly(bs)
 end
 
 function common_number_field(roots::Vector{Basic})
     v = :a
     minpolys = Basic[]
-    ps = Polynomials.Poly[]
+    ps = PolyCompat.Poly[]
     for r in roots
         mp, p = minpoly(r, v)
         if is_rational(r)
@@ -114,7 +117,7 @@ function common_number_field(roots::Vector{Basic})
     Hecke.degree(S), rs, ps
 end
 
-function masser_bound(degree::Int, roots::Vector{Basic}, mpolys::Vector{Polynomials.Poly})
+function masser_bound(degree::Int, roots::Vector{Basic}, mpolys::Vector{PolyCompat.Poly})
     k = length(roots)
     # assume all roots belong to the same number field
     d = degree
@@ -123,8 +126,8 @@ function masser_bound(degree::Int, roots::Vector{Basic}, mpolys::Vector{Polynomi
     # defining equation over Q
     h = 0
     for p in mpolys
-        cs = filter(x->!iszero(x), Polynomials.coeffs(p))
-        h0 = ceil(Polynomials.degree(p) + sum([log(abs(c)) for c in cs]))
+        cs = filter(x->!iszero(x), PolyCompat.coeffs(p))
+        h0 = ceil(PolyCompat.degree(p) + sum([log(abs(c)) for c in cs]))
         if h0 > h
             h = h0
         end
@@ -155,7 +158,7 @@ function ideal(m::Matrix{BigInt}, x::Array{Basic,1})
     inv = [xi*yi - 1 for (xi,yi) in zip(x,y)]
     base = [base; inv]
     
-    R, g = Singular.PolynomialRing(Singular.QQ, map(string, [y; x]))
+    R, g = Singular.PolynomialRing(Nemo.QQ, map(string, [y; x]))
     sbasis = [R(convert(Expr, b)) for b in base]
     I = Singular.Ideal(R, sbasis)
     return Singular.eliminate(I, g[1:length(y)]...)
